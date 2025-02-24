@@ -4,14 +4,7 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct CargoToml {
-    pub package: Package,
     pub dependencies: Option<BTreeMap<String, Dependency>>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Package {
-    pub name: String,
-    pub version: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -28,7 +21,6 @@ impl CargoToml {
 pub fn parse_cargo_toml(toml: &str) -> Result<CargoToml, String> {
     #[derive(Deserialize)]
     struct CargoTomlVisitor {
-        package: Package,
         dependencies: Option<BTreeMap<String, toml::Value>>,
     }
 
@@ -39,10 +31,7 @@ pub fn parse_cargo_toml(toml: &str) -> Result<CargoToml, String> {
         .map(parse_dependencies)
         .map_or(Ok(None), |v| v.map(Some))?;
 
-    Ok(CargoToml {
-        package: parsed.package,
-        dependencies,
-    })
+    Ok(CargoToml { dependencies })
 }
 
 fn parse_dependencies(
@@ -102,8 +91,6 @@ mod test {
             hyle = { git = "https://github.com/Hyle-org/hyle", tag = "0.12" }
             "#;
         let cargo_toml = parse_cargo_toml(toml).unwrap();
-        assert_eq!(cargo_toml.package.name, "hello");
-        assert_eq!(cargo_toml.package.version, "0.1.0");
         assert_eq!(cargo_toml.dependencies.as_ref().unwrap().len(), 3);
 
         assert_eq!(cargo_toml.get_dependency("serde").unwrap().version, "1.0");

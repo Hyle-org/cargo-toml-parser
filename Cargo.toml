@@ -1,6 +1,6 @@
 [package]
 name = "cargo-toml-parser"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Small crate to parse a Cargo.toml file to read dependencies versions"
 license = "MIT"
