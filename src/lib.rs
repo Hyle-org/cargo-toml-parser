@@ -68,8 +68,6 @@ fn parse_dependencies(
                             .to_string(),
                     },
                 );
-            } else {
-                return Err("can't find version or path".to_string());
             }
         }
     }
